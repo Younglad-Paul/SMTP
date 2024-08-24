@@ -1,0 +1,15 @@
+{
+  "name": "SMTP",
+  "version": "1.0.0",
+  "description": "SMTP verification",
+  "main": "index.js",
+  "author": "Younglad-Paul <borisadedayopaul@gmaol.com>",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "nodemailer": "^6.9.14",
+    "nodemon": "^3.1.4"
+  }
+}
