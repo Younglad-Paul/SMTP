@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice Email Verification</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f1f1f1;
+        }
+        #email, #otp {
+            width: 200px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        #button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        #verifyForm {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <form id="otpForm" class="body">
+        <input id="email" type="text" name="email" placeholder="Enter valid email address" />
+        <button id="button" type="submit">Send OTP</button>
+    </form>
+
+    <form id="verifyForm" class="body">
+        <input id="otp" type="text" name="otp" placeholder="Enter OTP" />
+        <button id="verifyButton" type="submit">Verify OTP</button>
+    </form>
+
+    <script>
+        async function SendOTP(event) {
+            event.preventDefault(); 
+            const email = document.getElementById('email').value;
+
+            try {
+                const response = await fetch("http://localhost:4000/sendotp", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email: email })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.text();
+                console.log(data);
+                alert(`An OTP has been sent to ${email}`);
+                document.getElementById('otpForm').style.display = 'none';
+                document.getElementById('verifyForm').style.display = 'block';
+            } catch (error) {
+                console.error("Error sending OTP:", error);
+                alert("Failed to send OTP");
+            }
+        }
+
+        async function VerifyOTP(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const otp = document.getElementById('otp').value;
+
+            try {
+                const response = await fetch("http://localhost:4000/verify", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email: email, otp: otp })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.text();
+                alert(data);
+            } catch (error) {
+                console.error("Error verifying OTP:", error);
+                alert("Invalid OTP");
+            }
+        }
+
+        document.getElementById('otpForm').addEventListener('submit', SendOTP);
+        document.getElementById('verifyForm').addEventListener('submit', VerifyOTP);
+    </script>
+</body>
+</html>
